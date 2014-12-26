@@ -1,0 +1,316 @@
+* { 
+	font-family: 'Raleway', sans-serif;
+}
+
+body {
+	opacity: 1;
+	margin: 0px;
+	background: url(../img/wall.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+
+div.outCont{
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+	display: table;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+	padding: 20px;
+	opacity: 0;
+	margin-top: -40px;
+}
+
+div.midCont{
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+	display: table-cell;
+    vertical-align: middle;
+}
+
+div.mainCont {
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+	position: relative;
+	width: 1210px;
+	height: 645px;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 70px 0px 0px 0px;
+}
+
+canvas#mainCanvas {
+	position: absolute;
+	z-index: -5;
+	box-shadow: 0px 0px 15px #222222;
+	background-image: url("../img/back.jpg");
+}
+
+div.scoreBoard {
+	top: 0px;
+	left: -20px;
+	width: 940px;
+	position: absolute;
+	height: 70px;
+	background-color: rgba(255, 255, 255, 0.9);
+	box-shadow: 0px 0px 10px #555555;
+}
+
+div.chatBoard {
+	position: absolute;
+	display: table;
+	right: 0px;
+	top: 80px;
+	height: 551px;
+	width: 300px;
+	background-color: rgba(255,255,255,0.6);
+	border: 1px solid #DDDDDD;
+}
+
+#msgLog {
+	position: absolute;
+	right: 0px;
+	bottom: 60px;
+	width: 100%;
+	max-height: 492px;
+	overflow: hidden;
+	overflow-y: auto;
+	padding: 10px;
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+}
+
+span.msgElemName {
+	font-weight: bold;
+}
+
+span.msgElemJoin {
+	font-weight: bold;
+	color: #005400;
+}
+
+span.msgElemLeave {
+	font-weight: bold;
+	color: #540000;
+}
+
+span.msgElemPersn {
+	font-weight: bold;
+}
+
+div.msgElem {
+	display: inline-block;
+	font-size: 14px;
+	margin-top: 10px;
+	color: #222222;
+	word-break: break-word;
+}
+
+#msgBox {
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+	min-width: 100%;
+	max-width: 100%;
+	min-height: 60px;
+	max-height: 60px;
+	background-color: rgba(255,255,255,0.6);
+	margin: 0;
+	padding: 5px;
+	color: #333333;
+	border-width: 0px;
+	resize: none;
+	font-size: 14px;
+}
+
+div#regCont {
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+	display: table;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+	padding: 0px;
+	opacity: 1;
+	background-color: rgba(0,0,0,0.4);
+	z-index: 10;
+}
+
+div.regInner {
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+	display: table-cell;
+    vertical-align: middle;
+}
+
+div#regBlock {
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+	position: relative;
+	width: 600px;
+	height: 300px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 60px;
+	opacity: 0;
+	margin-bottom: 100px;
+	padding: 0px 0px 0px 0px;
+	background-color: #EEEEEE;
+	-webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+	box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+}
+
+input#playerName {
+	position: absolute;
+	display: block;
+	left: 20px;
+	bottom: 90px;
+	width: 560px;
+	height: 50px;
+	text-align: center;
+	font-size: 30px;
+	color: #555555;
+	border: 1px solid #CCCCCC;
+	outline: none;
+	text-transform: capitalize;
+}
+
+p.regTxt {
+	position: absolute;
+	display: block;
+	left: 0px;
+	right: 0px;
+	top: 20px;
+	font-size: 20px;
+	text-align: center;
+}
+
+p.nameHead {
+	position: absolute;
+	display: block;
+	left: 0px;
+	right: 0px;
+	bottom: 130px;
+	font-size: 20px;
+	text-align: center;
+}
+
+div#regSubmit {
+	position: absolute;
+	bottom: 20px;
+	right: 100px;
+	left: 100px;
+	height: 20px;
+	background-color: #0081EA;
+	color: #FFFFFF;
+	text-align: center;
+	line-height: 20px;
+	padding: 10px;
+	cursor: pointer;
+	
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+div#regSubmit:hover {
+	background-color: #0077d3
+}
+
+div#regSubmit:active {
+	background-color: #0077d3
+	-webkit-box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.2);
+	-moz-box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.2);
+	box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.2);
+}
+
+div.scoreNumBox {
+	position: absolute;
+	font-family: 'Changa One', cursive;
+	font-size: 40px;
+	line-height: 65px;
+}
+
+div#redScore {
+	left: 60px;
+	color: #AA0000;
+}
+
+div#blueScore {
+	right: 60px;
+	color: #0044AA;
+}
+
+div#scoreAlert {
+	position: absolute;
+	top: 70px;
+	left: 20px;
+	width: 860px;
+	height: 563px;
+	opacity: 0;
+}
+
+div#scoresTxt {	
+	position: absolute;
+	top: 200px;
+	left: 0px;
+	width: 100%;
+	font-family: 'Changa One', cursive;
+	font-size: 40px;
+	text-shadow: 1px 1px 0px rgba(255,255,255,1);
+	text-align: center;
+	word-wrap: break-word
+}
+
+div.forBlue {
+	color: #002288;
+}
+
+div.forRed {
+	color: #990000;
+}
+
+div#lastKickBox{
+	position: absolute;
+	width: 100%;
+	text-align: center;
+	left: 0px;
+	bottom: 5px;
+	font-family: 'Changa One', cursive;
+}
+
+div.lastKickRed {
+	color: #AA0000;
+}
+
+div.lastKickBlue {
+	color: #0044AA;
+}
+
+div#timeBox{
+	position: absolute;
+	width: 100%;
+	left: 0px;
+	top: 10px;
+	text-align: center;
+	font-family: 'Changa One', cursive;
+	font-size: 28px;
+	color: #222222;
+}
