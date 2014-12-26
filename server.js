@@ -20,14 +20,15 @@ matchTime = {min: 0, sec: 20}
 
 // Basic server setup
 var express = require('express');
-var srv = express()
+var srv = express();
 var http = require('http').Server(srv);
 var io = require('socket.io')(http);
-var prt = process.env.OPENSHIFT_NODEJS_PORT || 8080 
+var prt = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+var ip = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
 
 srv.use(express.static(__dirname));
 
-http.listen(prt, function(){
+http.listen(prt, ip, function(){
   console.log('listening on port: ' + prt);
 });
 
