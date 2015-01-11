@@ -14,6 +14,9 @@
 		<script src="www/js/socket.io-1.2.0.js"></script>
 		<script src="www/js/client.js"></script>
 		
+		<div id="bgGrad"></div>
+		<div id="version">v 1.0</div>
+		
 		<div id="regCont">
 			<div class="regInner">
 				<div id="regBlock">
@@ -22,6 +25,8 @@
 					</p>
 					<p class="nameHead">Your Name</p>
 					<input id="playerName" type="text" maxlength="25">
+					<div class="front toggleButton left regUseKB regInpB selected">Play with keyboard</div>
+					<div class="front toggleButton right regUseM regInpB">Play with mouse</div>
 					<div id="regSubmit">Continue</div>
 				</div>
 			</div>
@@ -43,6 +48,46 @@
 					</div>
 					<div id="scoreAlert">
 						<div id="scoresTxt"></div>	
+					</div>
+					<div id="playerScores">
+						<div id="playerScoresHead">Scoreboard</div>
+						<div id="playerScoreInner">
+							<div id="redSide" class="pScoreSide">
+							</div>
+							<div id="blueSide" class="pScoreSide">
+							</div>
+						</div>
+					</div>
+					<div id="settingsButton" class="sideButton closed"><img src="www/img/sets.png"></div>
+					<div id="scoreButton" class="sideButton closed"><img src="www/img/score.png"></div>
+					<div id="settingsCont">
+						<div id="settingsHead">Settings</div>
+						<div class="settingBlock">
+							<div class="settingName">Control Mode</div>
+							<div class="settingCtrl">
+								<div class="regInpB toggleButton left regUseKB setts selected">Keyboard</div>
+								<div class="regInpB toggleButton right regUseM setts">Mouse</div>
+							</div>
+						</div>
+						<div class="settingBlock">
+							<div class="settingName">Mouse-stop smoothing</div>
+							<div class="settingCtrl">
+								<div class="smoothing toggleButton left setts selected">On</div>
+								<div class="smoothing toggleButton right setts">Off</div>
+							</div>
+						</div>
+						<div class="settingBlock">
+							<div class="settingName">Force</div>
+							<div class="settingCtrl">
+								<input id="forceVal" type="number" name="quantity" min="1" max="10000" step ="10", value="10">
+							</div>
+						</div>
+						<div class="settingBlock">
+							<div class="settingName">Friction</div>
+							<div class="settingCtrl">
+								<input id="frictVal" type="number" name="quantity" min="0" max="1" step ="0.01", value="0.1">
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

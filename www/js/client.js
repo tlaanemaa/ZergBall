@@ -1,11 +1,16 @@
 
 var socket = io();
 
-$( document ).ready(function() {
+$(document).ready(function() {
 	
 	// Set canvas objects
     var canvas = document.getElementById("mainCanvas")
     ctx = canvas.getContext("2d");
+	
+	// Variable to toggle mouse control
+	mouseControl = false;
+	mousePos = {x: 0, y: 0}
+	mouseSimple = true; // Toggles using simpler mouse calculation
 	
 	// Movement settings
 	startX = 500
@@ -42,9 +47,12 @@ $( document ).ready(function() {
 	// Variable to hold who kicked the ball last
 	lastPlayerToKick = {prev: {name: '', number: '', side: ''}, cur: {name: '', number: '', side: ''}}
 	
+	// Variable to determine if settings menu is open
+	isSettings = false
+	
 	// Keypress events
 	$(document).keydown(function(e) {
-		if(isRegd){
+		if(isRegd && !isSettings){
 			if(e.keyCode === 13){
 				// Send chat message
 				var msg = $('#msgBox').val()
@@ -56,9 +64,15 @@ $( document ).ready(function() {
 			} else if([37, 38, 39, 40].indexOf(e.keyCode) > -1){
 				setDirVars(e.which, Force)
 				e.preventDefault(); // prevent the default action (scroll / move caret)
+			} else if(e.keyCode === 9) {
+				// Capture tab to show score board
+				if($('div#playerScores').css('opacity') == "0") showPlayerScoreboard(true);
+				e.preventDefault(); // prevent the default action (scroll / move caret)
 			} else {
 				$('#msgBox').focus();
 			}
+		} else if(isSettings) {
+			// Do nothing
 		} else {
 			if(e.keyCode === 13) $('#regSubmit').click()
 		}
@@ -68,6 +82,10 @@ $( document ).ready(function() {
 	$(document).keyup(function(e) {
 		if([37, 38, 39, 40].indexOf(e.keyCode) > -1){
 			setDirVars(e.which, 0)
+			e.preventDefault(); // prevent the default action (scroll / move caret)
+		} else if(e.keyCode === 9) {
+			// Capture tab to hide score board
+			if($('div#playerScores').css('opacity') == "1") showPlayerScoreboard(false);
 			e.preventDefault(); // prevent the default action (scroll / move caret)
 		}
 	});
@@ -104,17 +122,21 @@ $( document ).ready(function() {
 				'margin-top': 0,
 				opacity: 1
 			}, 300);
-			$('div#regCont').animate({
-				opacity: 0
-			}, 300, function() {
-				$('div#regCont').css({'display':'none'});
-			});
+			$('div#regCont').css({'display':'none'});
+			drawPlayerScores(RemoteList);
 		});
 		
 	 });
 	
+	// Set up function to handle player score board update messages
+	socket.on('updatePlayerScoreboard', function(playerList){
+		drawPlayerScores(playerList);
+	});
+	
 	// Set up function to handle goal messages
 	socket.on('teamScored', function(data){
+	x = data
+		gameOn = data.gameOn
 		$('div.scoreBoard div#redScore').text(data.score.Reds)
 		$('div.scoreBoard div#blueScore').text(data.score.Blues)
 		if(data.side == "B"){
@@ -129,16 +151,16 @@ $( document ).ready(function() {
 		$('div.mainCont div#scoreAlert').animate({
 			opacity: 1
 		}, 200)
-		gameOn = data.gameOn
 	 });
 	
 	// Set up function to handle game state changes
 	socket.on('continueGame', function(data){
 		gameOn = data.gameOn
+		if($('div#playerScores').css('opacity') == "1") showPlayerScoreboard(false);
 		$('div.mainCont div#scoreAlert').animate({
 			opacity: 0
 		}, 200, function(){
-			$('div.mainCont div#scoreAlert').css({'display':'block'})
+			$('div.mainCont div#scoreAlert').css({'display':'none'})
 		})
 	})
 	
@@ -191,14 +213,100 @@ $( document ).ready(function() {
 	// Set up function to handle match resets (timer ran to 0)
 	socket.on('matchReset', function(data){
 		gameOn = data.gameOn
-		console.log("Match reset!!");
+		if($('div#playerScores').css('opacity') == "0") showPlayerScoreboard(true);
 	 });
 	
-	// Set up function to switch player sides
-	socket.on('sideSwitch', function(data){
-		var me = data[MyLoc.UID]
+	// Set up function to switch player sides and reset score
+	socket.on('resetData', function(data){
+		var me = data.playersList[MyLoc.UID]
 		if(typeof me !== 'undefined') MyLoc.side = me.side
+		$('div.scoreBoard div#redScore').text(data.scoreBoard.Reds)
+		$('div.scoreBoard div#blueScore').text(data.scoreBoard.Blues)
 	 });
+	
+	// Set up event to handle mouse movement on canvas
+	$('body').mousemove(function(e){
+		if(mouseControl) {
+			var offst = $('#mainCanvas').offset();
+			mousePos = {x: e.pageX - offst.left, y: e.pageY - offst.top};
+		}
+	});
+		
+	// Set up event handler for input selection on registration screen
+	$('div.regInpB').click(function() {
+		$('div.regInpB').removeClass('selected')
+		if($(this).hasClass('left')){
+			$('div.regInpB.left').addClass('selected')
+			mouseControl = false;
+		} else {
+			$('div.regInpB.right').addClass('selected')
+			mouseControl = true;
+		}
+	});
+	
+	// Set up event handler for mouse smoothing setting
+	$('div.smoothing').click(function() {
+		$('div.smoothing').removeClass('selected')
+		if($(this).hasClass('left')){
+			$('div.smoothing.left').addClass('selected')
+			mouseSimple = true;
+		} else {
+			$('div.smoothing.right').addClass('selected')
+			mouseSimple = false;
+		}
+	});
+	
+	// Set up event to open settings menu on click
+	$('div#settingsButton').click(function() {
+		if($('div#settingsCont').css('opacity') == "0"){
+			isSettings = true
+			$('div#settingsCont').css({'display': 'block'})
+			$('div#settingsCont').animate({
+				opacity: 1
+			}, 200);
+		}else if($('div#settingsCont').css('opacity') == "1"){
+			$('div#settingsCont').animate({
+				opacity: 0
+			}, 200, function(){
+				$('div#settingsCont').css({'display': 'none'})
+				isSettings = false
+			});
+		}
+	});
+	
+	// Set up event to open player scoreboard when user clicks the button
+	$('div#scoreButton').click(function() {
+		if($('div#playerScores').css('opacity') == "0"){
+			showPlayerScoreboard(true)
+		}else if($('div#playerScores').css('opacity') == "1"){
+			showPlayerScoreboard(false)
+		}
+	});
+	
+	// Set up event to allow changing force
+	$('input#forceVal').change(function() {
+	  Force = Number($('input#forceVal').val())
+	});
+	
+	// Set up event to allow changing friction
+	$('input#frictVal').change(function() {
+	  PlayerVelocityDecay = 1 - Number($('input#frictVal').val())
+	});
+	
+	$(document).click(function() {
+		if($('div#settingsCont').css('opacity') == "1"){
+			$('div#settingsCont').animate({
+				opacity: 0
+			}, 200, function(){
+				$('div#settingsCont').css({'display': 'none'})
+				isSettings = false
+			});
+		}
+	})
+	
+	$('div#settingsCont').click(function(e) {
+		e.stopPropagation()
+	})
 	
 });
 
@@ -263,9 +371,36 @@ function decimalRound(x, n){
 function MoveObject(data, id){
 	// Calculate force for this player or other players
 	if(id=='Me'){
-		var xForce = goRight-goLeft
-		var yForce = goDown-goUp
-		var curVelociDecay = PlayerVelocityDecay
+		// Calculate force from mouse if mouse control is enabled
+		if(mouseControl) {
+			
+			var xDist = mousePos.x - data.x
+			var yDist = mousePos.y - data.y
+			
+			if(mouseSimple && Math.abs(xDist) < 15 && Math.abs(yDist) < 15){
+				var curVelociDecay = 0.7
+				var mouseForce = Force / (1 - PlayerVelocityDecay) * (1 - curVelociDecay)
+			} else {
+				var mouseForce = Force
+				var curVelociDecay = PlayerVelocityDecay
+			}
+			
+			var xForce = Math.min(Math.abs(xDist), mouseForce) * custSign(xDist)
+			var yForce = Math.min(Math.abs(yDist), mouseForce) * custSign(yDist)
+			var maxDist = Math.max(Math.abs(xDist), Math.abs(yDist))
+			xForce = xForce * (Math.abs(xDist)/maxDist)
+			yForce = yForce * (Math.abs(yDist)/maxDist)
+			
+		} else {
+			var xForce = goRight-goLeft
+			var yForce = goDown-goUp
+			var curVelociDecay = PlayerVelocityDecay
+		}
+		// Rescale x and y to avoid moving faster when going diagonally
+		var reSc = rescaleXY(xForce, yForce)
+		xForce = reSc.x
+		yForce = reSc.y
+		
 	} else {
 		var xForce = 0
 		var yForce = 0
@@ -284,7 +419,7 @@ function MoveObject(data, id){
 	// Update velocities
 	var VelX = getVelocity(data.xVelocity, xForce, Mass, curVelociDecay)
 	var VelY = getVelocity(data.yVelocity, yForce, Mass, curVelociDecay)
-	
+		
 	// Test if would go over edge, if yes then bounce
 	if(x + VelX > 885) VelX = -Math.abs(VelX)
 	if(y + VelY > 548) VelY = -Math.abs(VelY)
@@ -334,15 +469,15 @@ function ReDraw() {
 		var img = new Image();
 		img.src = '/www/img/ball.png'
 		ctx.drawImage(img,elem.x-15,elem.y-15);
-		//ctx.beginPath()
-		//ctx.arc(elem.x, elem.y, 15, 0, Math.PI*2)
-		//ctx.fillStyle = getColor(elem.side)
-		//ctx.fill()
 	}
 	
-	// Draw player
+	// Draw player (add white circle around player)
 	ctx.beginPath()
 	ctx.arc(MyLoc.x, MyLoc.y, 15, 0, Math.PI*2)
+	ctx.fillStyle = "rgba(255,255,255,1)"
+	ctx.fill()
+	ctx.beginPath()
+	ctx.arc(MyLoc.x, MyLoc.y, 13, 0, Math.PI*2)
 	ctx.fillStyle = getColor(MyLoc.side)
 	ctx.fill()
 	drawNumber(MyLoc.x, MyLoc.y, MyLoc.number)
@@ -356,7 +491,7 @@ function getColor(side){
 	if(side=="R"){
 		return "rgba(150,0,0,0.9)"
 	} else if(side=="B") {
-		return "rgba(0,0,150,0.9)"
+		return "rgba(0,50,150,0.9)"
 	} else if(side=="Ball") {
 		return "rgba(250,250,250,1)"
 	}
@@ -387,23 +522,75 @@ function drawNumber(x, y, num){
 
 // Function to increment matchTime
 function incTime(){
-	if(matchTime.sec == 0){
-		matchTime.sec = 59
-		matchTime.min -= 1
-	} else {
-		matchTime.sec -= 1
+	if(gameOn){
+		if(matchTime.sec == 0){
+			matchTime.sec = 59
+			matchTime.min -= 1
+		} else {
+			matchTime.sec -= 1
+		}
+		if(matchTime.sec <= 0 && matchTime.min <= 0){
+			matchTime.sec = 0
+			matchTime.min = 90
+		}
+		$('div.scoreBoard div#timeBox').text(leftPad(matchTime.min,2) + ':' + leftPad(matchTime.sec,2))
 	}
-	if(matchTime.sec <= 0 && matchTime.min <= 0){
-		matchTime.sec = 0
-		matchTime.min = 90
-	}
-	$('div.scoreBoard div#timeBox').text(leftPad(matchTime.min,2) + ':' + leftPad(matchTime.sec,2))
 }
 
+// Simple function left pad numbers (1 becomes 01)
 function leftPad(number, targetLength) {
     var output = number + '';
     while (output.length < targetLength) {
         output = '0' + output;
     }
     return output;
+}
+
+// Function to refresh the player score board
+function drawPlayerScores(playerList) {
+	var targt = $('div#playerScores')
+	var kys = Object.keys(playerList)
+	// Remove old score information
+	targt.find('#redSide *').remove()
+	targt.find('#blueSide *').remove()
+	// Loop through players and add new scores
+	for(i=0; i < kys.length; i++){
+		if(kys[i]=='Ball') continue
+		var elem = playerList[kys[i]]
+		if(elem.side == "R"){
+			targt.find('#redSide').append('<div class="playerScoreCont"><div class="playerScoreName">' + elem.name + ' (' + elem.number + ')</div><div class="playerScoreVal">' + elem.Score + '</div></div>');
+		} else if(elem.side == "B") {
+			targt.find('#blueSide').append('<div class="playerScoreCont"><div class="playerScoreVal">' + elem.Score + '</div><div class="playerScoreName">' + elem.name + ' (' + elem.number + ')</div></div>');
+		}
+	}
+}
+
+// Simple function to show and hide player score board
+function showPlayerScoreboard(show){
+	if(show){
+		$('#playerScores').css({'display': 'block'});
+		$('#playerScores').animate({
+			opacity: 1
+		}, 200);
+	} else if(!show){
+		$('#playerScores').animate({
+			opacity: 0
+		}, 200, function(){
+			$('#playerScores').css({'display': 'none'});
+		})
+	}
+}
+
+// Simple function to calculate value's sign (IE doesnt support Math.sign)
+function custSign(val){
+	return val / Math.abs(val)
+}
+
+// Simple function to rescale x and y force (avoids giving too much speed when going diagnonally)
+function rescaleXY(x, y){
+	if(y == 0 || x == 0) return {x: x, y: y}
+	var maxV = Math.max(Math.abs(x), Math.abs(y)) * custSign(y)
+	var newY = maxV/Math.sqrt(Math.pow(x/y, 2) + 1)
+	var newX = x / y * newY
+	return {x: newX, y: newY}
 }

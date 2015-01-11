@@ -5,11 +5,12 @@
 body {
 	opacity: 1;
 	margin: 0px;
-	background: url(../img/wall.jpg) no-repeat center center fixed; 
-	-webkit-background-size: cover;
-	-moz-background-size: cover;
-	-o-background-size: cover;
-	background-size: cover;
+	background: url(../img/wall.jpg) repeat;
+	*background: url(../img/wall.jpg) no-repeat center center fixed; 
+	*-webkit-background-size: cover;
+	*-moz-background-size: cover;
+	*-o-background-size: cover;
+	*background-size: cover;
 }
 
 div.outCont{
@@ -23,6 +24,7 @@ div.outCont{
 	padding: 20px;
 	opacity: 0;
 	margin-top: -40px;
+	z-index: -100;
 }
 
 div.midCont{
@@ -31,6 +33,7 @@ div.midCont{
 	box-sizing: border-box;         /* Opera/IE 8+ */
 	display: table-cell;
     vertical-align: middle;
+	z-index: -100;
 }
 
 div.mainCont {
@@ -133,6 +136,16 @@ div.msgElem {
 	font-size: 14px;
 }
 
+div#regBack {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	background-color: rgba(0,0,0,0.4);
+	opacity: 1;
+}
+
 div#regCont {
 	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
 	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
@@ -143,7 +156,6 @@ div#regCont {
     width: 100%;
 	padding: 0px;
 	opacity: 1;
-	background-color: rgba(0,0,0,0.4);
 	z-index: 10;
 }
 
@@ -161,7 +173,7 @@ div#regBlock {
 	box-sizing: border-box;         /* Opera/IE 8+ */
 	position: relative;
 	width: 600px;
-	height: 300px;
+	height: 330px;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 60px;
@@ -178,7 +190,7 @@ input#playerName {
 	position: absolute;
 	display: block;
 	left: 20px;
-	bottom: 90px;
+	top: 155px;
 	width: 560px;
 	height: 50px;
 	text-align: center;
@@ -187,6 +199,9 @@ input#playerName {
 	border: 1px solid #CCCCCC;
 	outline: none;
 	text-transform: capitalize;
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
 }
 
 p.regTxt {
@@ -204,16 +219,70 @@ p.nameHead {
 	display: block;
 	left: 0px;
 	right: 0px;
-	bottom: 130px;
+	top: 105px;
 	font-size: 20px;
 	text-align: center;
+}
+
+div.toggleButton {
+	position: absolute;
+	background-color: #CCCCCC;
+	color: #333333;
+	text-align: center;
+	line-height: 20px;
+	padding: 10px;
+	cursor: pointer;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+div.toggleButton.front {
+	bottom: 70px;
+	height: 20px;
+	width: 255px;
+}
+
+div.toggleButton.setts {
+	height: 20px;
+	width: 225px;
+}
+
+div.toggleButton.front.left{
+	left: 20px;
+}
+
+div.toggleButton.front.right{
+	right: 20px;
+}
+
+div.toggleButton.setts.left{
+	left: 10px;
+}
+
+div.toggleButton.setts.right{
+	right: 10px;
+}
+
+div.toggleButton:hover {
+	*background-color: #BBBBBB
+}
+
+div.toggleButton.selected {
+	background-color: #BBBBBB;
+	-webkit-box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.1);
+	-moz-box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.1);
+	box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.1);
 }
 
 div#regSubmit {
 	position: absolute;
 	bottom: 20px;
-	right: 100px;
-	left: 100px;
+	right: 20px;
+	left: 20px;
 	height: 20px;
 	background-color: #0081EA;
 	color: #FFFFFF;
@@ -313,4 +382,211 @@ div#timeBox{
 	font-family: 'Changa One', cursive;
 	font-size: 28px;
 	color: #222222;
+}
+
+div#bgGrad {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	z-index: -100;
+	
+	/* IE10 Consumer Preview */ 
+	background-image: -ms-radial-gradient(center top, circle farthest-corner, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);
+
+	/* Mozilla Firefox */ 
+	background-image: -moz-radial-gradient(center top, circle farthest-corner, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);
+
+	/* Opera */ 
+	background-image: -o-radial-gradient(center top, circle farthest-corner, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);
+
+	/* Webkit (Safari/Chrome 10) */ 
+	background-image: -webkit-gradient(radial, center top, 0, center top, 560, color-stop(0, rgba(0,0,0,0)), color-stop(1, rgba(0,0,0,1)));
+
+	/* Webkit (Chrome 11+) */ 
+	background-image: -webkit-radial-gradient(center top, circle farthest-corner, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);
+
+	/* W3C Markup, IE10 Release Preview */ 
+	background-image: radial-gradient(circle farthest-corner at center top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);
+}
+
+div#playerScores {
+	position: absolute;
+	top: 101px;
+	left: 125px;
+	width: 650px;
+	height: 500px;
+	background-color: rgba(255,255,255,0.93);
+	box-shadow: 0px 0px 10px #555555;
+	display: none;
+	opacity: 0;
+}
+
+div#playerScores div#playerScoresHead {
+	position: absolute;
+	top: 15px;
+	left: 0px;
+	right: 0px;
+	height: 40px;
+	white-space: nowrap;
+	font-family: 'Changa One', cursive;
+	text-align: center;
+	font-size: 27px;
+	color: #222222;
+}
+
+div#playerScores div#playerScoreInner {
+	position: absolute;
+	top: 60px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	overflow: hidden;
+	overflow-y: auto;
+}
+
+div#playerScores div.pScoreSide {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	width: 50%;
+	padding: 10px;
+	box-sizing: border-box;
+}
+
+div#playerScores div#redSide {
+	left: 0px;
+}
+
+div#playerScores div#blueSide {
+	right: 0px;
+}
+
+div#playerScores div.playerScoreCont *{
+	display: table-cell;
+	padding: 5px 10px 5px 10px;
+	white-space: nowrap;
+	font-family: 'Changa One', cursive;
+}
+
+div#playerScores div#redSide div.playerScoreName {
+	width: 100%;
+}
+
+div#playerScores div#blueSide div.playerScoreVal {
+	width: 100%;
+}
+
+div#playerScores div#redSide  *{
+	color: #AA0000;
+}
+
+div#playerScores div#blueSide  *{
+	color: #0044AA;
+}
+
+div#settingsCont {
+	position: absolute;
+	display: none;
+	background-color: rgba(255,255,255,0.93);
+	top: 101px;
+	left: 200px;
+	height: 330px;
+	width: 500px;
+	opacity: 0;
+	z-index: 10;
+	box-shadow: 0px 0px 10px #555555;
+	padding: 70px 10px 10px 10px;
+}
+
+div#settingsCont *{
+	font-family: 'Changa One', cursive;
+	color: #333333;
+}
+
+div#settingsCont div#settingsHead {
+	position: absolute;
+	top: 15px;
+	left: 0px;
+	right: 0px;
+	height: 40px;
+	white-space: nowrap;
+	text-align: center;
+	font-size: 27px;
+	color: #222222;
+}
+
+div.settingBlock {
+	margin-bottom: 20px;
+}
+
+div.settingCtrl {
+	height: 40px;
+}
+
+div.sideButton {
+	position: absolute;
+	left: -30px;
+	height: 30px;
+	width: 50px;
+	background-color: rgba(255,255,255, 0.9);
+	box-shadow: 0px 0px 15px #222222;
+	z-index: -10;
+	border-radius: 5px 0px 0px 5px;
+	-moz-border-radius: 5px 0px 0px 5px;
+	-webkit-border-radius: 5px 0px 0px 5px;
+	border: 0px solid #000000;
+	-webkit-transition: all 0.3s ease;
+	-moz-transition: all 0.3s ease;
+	-ms-transition: all 0.3s ease;
+	-o-transition: all 0.3s ease;
+	transition: all 0.3s ease;
+}
+
+div.sideButton:hover {
+	left: -35px;
+}
+
+div.sideButton#scoreButton {
+	top: 140px;
+}
+
+div.sideButton#settingsButton {
+	top: 180px;
+}
+
+div.sideButton img {
+	padding: 6px;
+	width: 18px;
+	height: 18px;
+	cursor: pointer;
+}
+
+div.sideButton#scoreButton img {
+	opacity: 0.7;
+}
+
+div.sideButton#settingsButton img{
+	opacity: 0.9;
+}
+
+div.settingCtrl {
+	margin-top: 7px;
+}
+
+input[type="number"]{
+	height: 20px;
+	width: 100px;
+	padding: 5px;
+	font-size: 15px;
+}
+
+div#version {
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+	color: rgba(255,255,255,0.08);
+	font-size: 13px;
+	font-style: italic;
 }

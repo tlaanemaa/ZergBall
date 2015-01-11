@@ -1,5 +1,5 @@
 {
-  "name": "ZergBall",
+  "name": "Soccer_Test",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.10.6",
+    "express": "^4.10.7",
     "socket.io": "^1.2.1"
   }
 }

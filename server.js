@@ -10,7 +10,7 @@ ballMass = 1
 ballMaxForce = 100
 ballVelocityDecay = 0.99
 ballTouchDistance = 30
-playersList['Ball'] = {UID: 'Ball', side: 'Ball', x: 450, y: 282, xVelocity: 0, yVelocity: 0}
+playersList['Ball'] = {UID: 'Ball', side: 'Ball', x: 450, y: 282, xVelocity: 0, yVelocity: 0, Score: 0}
 lastPlayerToKick = {name: '', number: '', side: ''}
 moveBallTimeHolder = ''
 gameOn = true
@@ -20,16 +20,14 @@ matchTime = {min: 0, sec: 20}
 
 // Basic server setup
 var express = require('express');
-var srv = express();
+var srv = express()
 var http = require('http').Server(srv);
 var io = require('socket.io')(http);
-var prt = process.env.OPENSHIFT_NODEJS_PORT || 8080;
-var ip = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
 
 srv.use(express.static(__dirname));
 
-http.listen(prt, ip, function(){
-  console.log('listening on port: ' + prt);
+http.listen(8080, function(){
+  console.log('listening on *:8080');
 });
 
 
@@ -53,7 +51,7 @@ io.on('connection', function(socket){
 		var pNum = freePlayerNum()
 		if(counts.reds > counts.blues) side = "B"; else side = "R"
 		if(side == "R") var offst = -sideStartOffsetX; else offst = sideStartOffsetX
-		playersList[UID] = {UID: UID, side: side, x: playerStartX+offst, y: playerStartY, xVelocity: 0, yVelocity: 0, name: data.name, number: pNum}
+		playersList[UID] = {UID: UID, side: side, x: playerStartX+offst, y: playerStartY, xVelocity: 0, yVelocity: 0, name: data.name, number: pNum, Score: 0}
 		
 		// Tell everyone that someone joined
 		var msg = '>> ' + playersList[UID].name + ' (' + playersList[UID].number + ') has joined'
@@ -69,13 +67,18 @@ io.on('connection', function(socket){
 		
 		// Send current match time to player
 		sendMatchTime(socket);
+		
+		// Trigger player scoreboard update on all players
+		trigPlayerScoreboardUpdate();
 	});
 	
 	// Player sent its position
 	socket.on('sendPos', function(data){
 		if(typeof data.UID === 'undefined') return
 		if(typeof playersList[data.UID] === 'undefined') return
+		var plyrScr = playersList[data.UID].Score
 		playersList[data.UID] = data
+		playersList[data.UID].Score = plyrScr
 	});
 	
 	// Player left. Tell everyone that he left and delete entry from playersList
@@ -86,6 +89,7 @@ io.on('connection', function(socket){
 			io.sockets.emit('chatUpdate', {name: '', msg: msg, sysmes: 2});
 		}
 		delete playersList[socket.id]
+		trigPlayerScoreboardUpdate();
 	});
 	
 	// Player sent a chat message. Bounce it back to everyone
@@ -178,6 +182,7 @@ function MoveBall() {
 			kickCount += 1
 			if(!kickFixed){
 				kickFixed = true
+				lastPlayerToKick.UID = playersList[k[i]].UID
 				lastPlayerToKick.name = playersList[k[i]].name
 				lastPlayerToKick.number = playersList[k[i]].number
 				lastPlayerToKick.side = playersList[k[i]].side
@@ -218,10 +223,22 @@ function MoveBall() {
 	if(playersList['Ball'].x > 853){
 		// Ball is in Blue's gate
 		scoreBoard.Reds += 1
+		// Mark the goal for the player too
+		var scrPlyr = playersList[lastPlayerToKick.UID]
+		if(typeof scrPlyr !== "undefined"){
+			if(scrPlyr.side == "B") playersList[lastPlayerToKick.UID].Score -= 1
+			if(scrPlyr.side == "R") playersList[lastPlayerToKick.UID].Score += 1
+		}
 		sendGoalInf({side: "R", score: scoreBoard, name: lastPlayerToKick.name, number: lastPlayerToKick.number})
 	} else if(playersList['Ball'].x < 46) {
 		// Ball is in Red's gate
 		scoreBoard.Blues += 1
+		// Mark the goal for the player too
+		var scrPlyr = playersList[lastPlayerToKick.UID]
+		if(typeof scrPlyr !== "undefined"){
+			if(scrPlyr.side == "R") playersList[lastPlayerToKick.UID].Score -= 1
+			if(scrPlyr.side == "B") playersList[lastPlayerToKick.UID].Score += 1
+		}
 		sendGoalInf({side: "B", score: scoreBoard, name: lastPlayerToKick.name, number: lastPlayerToKick.number})
 	} else {
 		// No goal -> reschedule next run
@@ -231,15 +248,19 @@ function MoveBall() {
 
 function sendGoalInf(data){
 	// Move ball to center in 4 seconds and continue tracking ball's position
+	gameOn = false
 	setTimeout(function(){
+		gameOn = true
 		playersList['Ball'].x = 450
 		playersList['Ball'].y = 282
 		playersList['Ball'].xVelocity = 0
 		playersList['Ball'].yVelocity = 0
-		io.sockets.emit('continueGame',{gameOn: true});
+		io.sockets.emit('continueGame',{gameOn: gameOn});
 		MoveBall()
 	}, 4000)
-	io.sockets.emit('teamScored',data);
+	data.gameOn = gameOn
+	io.sockets.emit('teamScored', data);
+	trigPlayerScoreboardUpdate();
 } 
 
 // Function to calculate any player's current effect on the ball
@@ -278,19 +299,21 @@ function decimalRound(x, n){
 
 // Function to count match time
 function incMatchTime(){
-	if(matchTime.sec == 0){
-		matchTime.sec = 59
-		matchTime.min -= 1
-	} else {
-		matchTime.sec -= 1
-	}
-	
-	if(matchTime.sec <= 0 && matchTime.min <= 0){
+	if(gameOn){
+		if(matchTime.sec == 0){
+			matchTime.sec = 59
+			matchTime.min -= 1
+		} else {
+			matchTime.sec -= 1
+		}
 		
-		resetMatch()	
-		
-		matchTime.sec = 0
-		matchTime.min = 90
+		if(matchTime.sec <= 0 && matchTime.min <= 0){
+			
+			resetMatch()	
+			
+			matchTime.sec = 0
+			matchTime.min = 90
+		}
 	}
 }
 
@@ -308,24 +331,37 @@ function resetMatch(){
 	playersList['Ball'].y = 282
 	playersList['Ball'].xVelocity = 0
 	playersList['Ball'].yVelocity = 0
-	
-	// Switch teams
-	var k = Object.keys(playersList)
-	for(var i = 0; i < k.length; i++){
-		if(playersList[k[i]].side == "R"){
-			playersList[k[i]].side = "B"
-		} else if(playersList[k[i]].side == "B") {
-			playersList[k[i]].side = "R"
-		}
-	}
-	
-	// Tell players that sides were switched
-	io.sockets.emit('sideSwitch', playersList);
-	
+			
 	// Schedule game start to 5 seconds
 	setTimeout(function(){
+		// Switch teams and reset player scores
+		var k = Object.keys(playersList)
+		for(var i = 0; i < k.length; i++){
+			if(playersList[k[i]].side == "R"){
+				playersList[k[i]].side = "B"
+			} else if(playersList[k[i]].side == "B") {
+				playersList[k[i]].side = "R"
+			}									
+			playersList[k[i]].Score = 0
+		}
+		
+		// Reset score
+		scoreBoard.Reds = 0
+		scoreBoard.Blues = 0
+	
+		// Tell players that sides were switched and score was reset
+		io.sockets.emit('resetData', {playersList: playersList, scoreBoard: scoreBoard});
+		
+		// Tell players to redraw player score list
+		trigPlayerScoreboardUpdate();
+		
 		gameOn = true
 		io.sockets.emit('continueGame',{gameOn: gameOn});
 		MoveBall()
 	}, 5000)
+}
+
+// Simple function to trigger players score board update on clients
+function trigPlayerScoreboardUpdate(){
+	io.sockets.emit('updatePlayerScoreboard', playersList);
 }
