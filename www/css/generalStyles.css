@@ -584,9 +584,20 @@ input[type="number"]{
 
 div.footerTxt {
 	position: absolute;
-	bottom: 10px;
-	font-size: 13px;
-	opacity: 0
+	bottom: 0px;
+	font-size: 10px;
+	opacity: 0;
+	-webkit-transition: all 0.3s ease;
+	-moz-transition: all 0.3s ease;
+	-ms-transition: all 0.3s ease;
+	-o-transition: all 0.3s ease;
+	transition: all 0.3s ease;
+	padding: 10px;
+	cursor: default;
+}
+
+div.footerTxt:hover {
+	opacity: 0.7 !important;
 }
 
 div.footerTxt a {
@@ -596,16 +607,13 @@ div.footerTxt a {
 }
 
 div#version {
-	right: 10px;
+	right: 0px;
 	color: #ffffff;
 }
 
 div#feedback{
 	left: 0px;
-	right: 0px;
 	color: #ffffff;
-
-	text-align: center;
 }
 
 img.closeXButton {
