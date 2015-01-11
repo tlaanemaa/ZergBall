@@ -23,11 +23,12 @@ var express = require('express');
 var srv = express()
 var http = require('http').Server(srv);
 var io = require('socket.io')(http);
+var port = OPENSHIFT_NODEJS_PORT || 8080  
 
 srv.use(express.static(__dirname));
 
-http.listen(8080, function(){
-  console.log('listening on *:8080');
+http.listen(port, function(){
+  console.log('listening on *:' + port );
 });
 
 
