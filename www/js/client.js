@@ -1,5 +1,5 @@
 
-var socket = io('ws://app-domain.rhcloud.com:8000'); // This is for OpenShift
+var socket = io('ws://zergball-rndm.rhcloud.com:8000'); // This is for OpenShift
 //var socket = io();
 
 $(document).ready(function() {
