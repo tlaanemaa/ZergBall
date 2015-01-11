@@ -122,7 +122,11 @@ $(document).ready(function() {
 			$('div.outCont').animate({
 				'margin-top': 0,
 				opacity: 1
-			}, 300);
+			}, 300, function() {
+				$('div.footerTxt').animate({
+					opacity: 0.25
+				}, 300);
+			});
 			$('div#regCont').css({'display':'none'});
 			drawPlayerScores(RemoteList);
 		});
@@ -260,18 +264,9 @@ $(document).ready(function() {
 	// Set up event to open settings menu on click
 	$('div#settingsButton').click(function() {
 		if($('div#settingsCont').css('opacity') == "0"){
-			isSettings = true
-			$('div#settingsCont').css({'display': 'block'})
-			$('div#settingsCont').animate({
-				opacity: 1
-			}, 200);
+			showSettings(true);
 		}else if($('div#settingsCont').css('opacity') == "1"){
-			$('div#settingsCont').animate({
-				opacity: 0
-			}, 200, function(){
-				$('div#settingsCont').css({'display': 'none'})
-				isSettings = false
-			});
+			showSettings(false);
 		}
 	});
 	
@@ -294,19 +289,29 @@ $(document).ready(function() {
 	  PlayerVelocityDecay = 1 - Number($('input#frictVal').val())
 	});
 	
+	// Set up event to close menus over canvas when user clicks elsewhere
 	$(document).click(function() {
-		if($('div#settingsCont').css('opacity') == "1"){
-			$('div#settingsCont').animate({
-				opacity: 0
-			}, 200, function(){
-				$('div#settingsCont').css({'display': 'none'})
-				isSettings = false
-			});
-		}
+		if($('div#settingsCont').css('opacity') == "1") showSettings(false);
+		if($('div#playerScores').css('opacity') == "1") showPlayerScoreboard(false);
 	})
 	
+	// Stop click event bubbling on settings menu
 	$('div#settingsCont').click(function(e) {
 		e.stopPropagation()
+	})
+	
+	// Stop click event bubbling on score menu
+	$('div#playerScores').click(function(e) {
+		e.stopPropagation()
+	})
+	
+	// Close parent element wen X is pressed
+	$('img.closeXButton').click(function() {
+		$(this).parent().animate({
+			opacity: 0
+		}, 200, function(){
+			$(this).css({'display': 'none'})
+		});
 	})
 	
 });
@@ -579,6 +584,24 @@ function showPlayerScoreboard(show){
 		}, 200, function(){
 			$('#playerScores').css({'display': 'none'});
 		})
+	}
+}
+
+// Simple function to show and hide settings
+function showSettings(show){
+	if(show){
+		isSettings = true
+		$('div#settingsCont').css({'display': 'block'})
+		$('div#settingsCont').animate({
+			opacity: 1
+		}, 200);
+	} else if($('div#settingsCont').css('opacity') == "1"){
+		$('div#settingsCont').animate({
+			opacity: 0
+		}, 200, function(){
+			$('div#settingsCont').css({'display': 'none'})
+			isSettings = false
+		});
 	}
 }
 

@@ -2,7 +2,7 @@
 playersList = {}; //List to hold all current players
 scoreBoard = {Reds:0, Blues:0}
 playerStartX = 450
-playerStartY = 282
+playerStartY = 279
 sideStartOffsetX = 100
 
 // Global variables for ball
