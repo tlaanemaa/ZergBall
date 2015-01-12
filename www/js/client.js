@@ -505,7 +505,7 @@ function getColor(side){
 
 // Function to keep track who kicked the ball last
 function updateLastKick(){
-	if(lastPlayerToKick.cur.number != lastPlayerToKick.prev.number){
+	if(lastPlayerToKick.cur.number != lastPlayerToKick.prev.number || lastPlayerToKick.cur.name != lastPlayerToKick.prev.name){
 		if(lastPlayerToKick.cur.side == "R"){
 			$('#lastKickBox').removeClass('lastKickRed lastKickBlue').addClass('lastKickRed')
 		} else {
