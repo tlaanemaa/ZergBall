@@ -168,8 +168,9 @@ $(document).ready(function() {
 			opacity: 0
 		}, 200, function(){
 			$('div.mainCont div#scoreAlert').css({'display':'none'})
+			gameOn = data.gameOn
 		})
-		gameOn = data.gameOn
+		
 	})
 	
 	// Set up function to handle losing focus on window
