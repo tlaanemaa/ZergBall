@@ -9,7 +9,7 @@ $(document).ready(function() {
     ctx = canvas.getContext("2d");
 	
 	// Variable to toggle mouse control
-	mouseControl = false;
+	mouseControl = true;
 	mousePos = {x: 0, y: 0}
 	mouseSimple = true; // Toggles using simpler mouse calculation
 	
