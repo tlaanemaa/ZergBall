@@ -1,6 +1,6 @@
 
-var socket = io('ws://zergball-rndm.rhcloud.com:8000'); // This is for OpenShift
-//var socket = io();
+//var socket = io('ws://zergball-rndm.rhcloud.com:8000'); // This is for OpenShift
+var socket = io();
 
 $(document).ready(function() {
 	
@@ -12,6 +12,9 @@ $(document).ready(function() {
 	mouseControl = true;
 	mousePos = {x: 0, y: 0}
 	mouseSimple = true; // Toggles using simpler mouse calculation
+	
+	// Variable to toggle leaving paint lines
+	paintLines = false;
 	
 	// Movement settings
 	startX = 500
@@ -160,13 +163,13 @@ $(document).ready(function() {
 	
 	// Set up function to handle game state changes
 	socket.on('continueGame', function(data){
-		gameOn = data.gameOn
 		if($('div#playerScores').css('opacity') == "1") showPlayerScoreboard(false);
 		$('div.mainCont div#scoreAlert').animate({
 			opacity: 0
 		}, 200, function(){
 			$('div.mainCont div#scoreAlert').css({'display':'none'})
 		})
+		gameOn = data.gameOn
 	})
 	
 	// Set up function to handle losing focus on window
@@ -258,6 +261,18 @@ $(document).ready(function() {
 		} else {
 			$('div.smoothing.right').addClass('selected')
 			mouseSimple = false;
+		}
+	});
+	
+	// Set up event handler for paint trail setting
+	$('div.trail').click(function() {
+		$('div.trail').removeClass('selected')
+		if($(this).hasClass('left')){
+			$('div.trail.left').addClass('selected')
+			paintLines = true;
+		} else {
+			$('div.trail.right').addClass('selected')
+			paintLines = false;
 		}
 	});
 	
@@ -453,7 +468,7 @@ function MoveObject(data, id){
 // Redraws the field
 function ReDraw() {
 	var keysR = Object.keys(RemoteList)
-	ctx.clearRect(0,0,1000,688)
+	if(!paintLines) ctx.clearRect(0,0,1000,688)
 
 	// Draw other players
 	var myky = MyLoc.UID
