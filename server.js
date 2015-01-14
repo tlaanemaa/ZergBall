@@ -140,7 +140,8 @@ function freePlayerNum() {
 		outNum = 1
 	} else {
 		var maxV = Math.max.apply(null,nums)
-		var minV = Math.min.apply(null,nums)
+		//var minV = Math.min.apply(null,nums)
+		var minV = 1
 		for (var i = minV; i <= maxV; ++i){
 			if(nums.indexOf(i) == -1){
 				outNum = i
