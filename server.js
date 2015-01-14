@@ -257,11 +257,9 @@ function sendGoalInf(data){
 		playersList['Ball'].y = 282
 		playersList['Ball'].xVelocity = 0
 		playersList['Ball'].yVelocity = 0
+		gameOn = true
 		io.sockets.emit('continueGame',{gameOn: gameOn});
-		setTimeout(function(){
-			gameOn = true
-			MoveBall()
-		}, 250);
+		setTimeout(MoveBall, 250);
 	}, 4000)
 	data.gameOn = gameOn
 	io.sockets.emit('teamScored', data);
