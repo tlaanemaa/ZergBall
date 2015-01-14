@@ -253,13 +253,15 @@ function sendGoalInf(data){
 	// Move ball to center in 4 seconds and continue tracking ball's position
 	gameOn = false
 	setTimeout(function(){
-		gameOn = true
 		playersList['Ball'].x = 450
 		playersList['Ball'].y = 282
 		playersList['Ball'].xVelocity = 0
 		playersList['Ball'].yVelocity = 0
 		io.sockets.emit('continueGame',{gameOn: gameOn});
-		MoveBall()
+		setTimeout(function(){
+			gameOn = true
+			MoveBall()
+		}, 250);
 	}, 4000)
 	data.gameOn = gameOn
 	io.sockets.emit('teamScored', data);
