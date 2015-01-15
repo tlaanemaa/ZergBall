@@ -5,4 +5,4 @@ The inspiration behind this project came from the wish to learn server side web 
 The project was a success as I learned alot in the process. Also, I think the game itself came out pretty quite cool (If I could only get more traffic on it).
 <br>
 <br>
-The finished project can be seen at <a>www.zergball.com</a> or at <a>http://zergball-rndm.rhcloud.com/</a>
+The finished project can be seen at <a>www.zergball.com</a> or at <a>http://zergball-rndm.rhcloud.com</a>
