@@ -241,17 +241,6 @@ p.regTxt {
 	text-align: center;
 }
 
-p.regTxtSecond {
-	position: absolute;
-	display: block;
-	left: 0px;
-	right: 0px;
-	top: 50px;
-	font-size: 15px;
-	text-align: center;
-	color: #555555;
-}
-
 p.nameHead {
 	position: absolute;
 	display: block;
