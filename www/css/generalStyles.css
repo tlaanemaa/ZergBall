@@ -1,7 +1,7 @@
 * { 
 	font-family: 'Raleway', sans-serif;
 }
- 
+
 body {
 	opacity: 1;
 	margin: 0px;
@@ -239,6 +239,17 @@ p.regTxt {
 	top: 20px;
 	font-size: 20px;
 	text-align: center;
+}
+
+p.regTxtSecond {
+	position: absolute;
+	display: block;
+	left: 0px;
+	right: 0px;
+	top: 50px;
+	font-size: 15px;
+	text-align: center;
+	color: #555555;
 }
 
 p.nameHead {
