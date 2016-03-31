@@ -6,3 +6,4 @@ The project was a success as I learned alot in the process. Also, I think the ga
 <br>
 <br>
 The finished project can be seen at <a>www.zergball.com</a> or at <a>http://zergball-rndm.rhcloud.com</a> when the domain expires
+PS: OpenShift powers it's free tier VMs down after a while so the page might not load at first. Just refresh the page a couple of times if that happens and it should come up.
