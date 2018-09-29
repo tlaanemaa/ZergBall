@@ -491,7 +491,7 @@ function ReDraw() {
 	var elem = RemoteList['Ball']
 	if(typeof elem !== 'undefined'){
 		var img = new Image();
-		img.src = '/www/img/ball.png'
+		img.src = 'www/img/ball.png'
 		ctx.drawImage(img,elem.x-15,elem.y-15);
 	}
 	
