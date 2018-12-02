@@ -10,4 +10,4 @@ The finished project can be seen at ~~www.zergball.com~~ or at ~~http://zergball
 <br>
 PS: OpenShift powers it's free tier VMs down after a while so the page might not load at first. Just refresh the page a couple of times if that happens and it should come up.
 
-__PS: The OpenShift URL is long dead at this point.__
+__PS: This project is no longer hosted anywhere. Clone the repository and run it locally to check it out.__
