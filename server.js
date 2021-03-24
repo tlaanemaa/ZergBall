@@ -23,8 +23,8 @@ var express = require('express');
 var srv = express()
 var http = require('http').Server(srv);
 var io = require('socket.io')(http);
-var port = process.env.OPENSHIFT_NODEJS_PORT || 3849;
-var ip = ip = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+var port = process.env.PORT || 3849;
+var ip = process.env.NODEJS_IP || "0.0.0.0";
 
 srv.use(express.static(__dirname));
 
